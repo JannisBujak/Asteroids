@@ -6,8 +6,14 @@
 
 using namespace std;
 
+#include <io.h>
+#include <fcntl.h>
+
 int main(int argc, char** argv)
 {	
+	_setmode(_fileno(stdout), _O_U16TEXT);
+
+	/*
 	QApplication app(argc, argv);
 
 	QPushButton button;
@@ -16,4 +22,13 @@ int main(int argc, char** argv)
 	button.show();
 
 	return app.exec();
+	*/
+	std::wcout << "\u2659" << std::endl;
+
+#if 0 
+	ChessGame game;
+	Chessboard board;
+	board.print(game);
+#endif 
+	system("pause");
 }
