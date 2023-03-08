@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 
 	return app.exec();
 	*/
-	std::wcout << "\u2659" << std::endl;
+	std::wcout << '\u2659' << std::endl;
 
 #if 0 
 	ChessGame game;
