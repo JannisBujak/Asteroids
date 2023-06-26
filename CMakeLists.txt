@@ -9,15 +9,16 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-set(PROJECT "QTProject")
-project ("QTProject" VERSION 1.0.0 LANGUAGES CXX)
+set(PROJECT "QTTemplate")
+project ("QTTemplate" VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_PREFIX_PATH "C:/ProgrammingTools/QT/6.6.0/msvc2019_64/lib/cmake/Qt6")
+set(CMAKE_PREFIX_PATH "${QTDIR}")
 
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
 # Include sub-projects.
-add_subdirectory ("QTProject")
+add_subdirectory ("QTTemplate")
+
