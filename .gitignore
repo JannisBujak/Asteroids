@@ -1,5 +1,12 @@
 **/out/**
 **/.vs/**
-**.vcxproj**
+**/.vscode/**
 **.cmake
-**CMakeFiles**
+**/.idea/**
+**/*build*/**
+**/CMakeFiles/**
+
+
+**.hint
+/enc_temp_folder/**
+launch.json
