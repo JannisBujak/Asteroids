@@ -10,17 +10,20 @@
 #include <algorithm>
 
 
+class Weapon;
+
 class Player
 	: public Moveable
 {
 private:
 	float movement_speed;
+	std::shared_ptr<Weapon> m_weapon;
 public:
 	
 
 public:
-	Player(float width, float height, float movement_speed, Game* a_game);
-	Player(const sf::Vector2f& size, float movement_speed, Game* a_game);
+	Player(float width, float height, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game);
+	Player(const sf::Vector2f& size, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game);
 
 
 	void setMovementSpeed(float movement_speed);

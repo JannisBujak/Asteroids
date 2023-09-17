@@ -8,6 +8,7 @@
 #include "KeyboardReader.h"
 
 #include <QList>
+#include <QMutex>
 
 class Game
 {
@@ -18,7 +19,54 @@ private:
 	sf::VideoMode video_mode;
 
 	std::shared_ptr<Player> m_player;
-	QList<std::shared_ptr<Moveable>> m_moveables;
+
+	class ProjectilesProtected
+	{
+	private:
+		std::vector<std::shared_ptr<Moveable>> m_list;
+		QMutex mutex;
+
+	public:
+		ProjectilesProtected() = default;
+		ProjectilesProtected(std::vector<std::shared_ptr<Moveable>> a_list)
+			: m_list(a_list)
+		{}
+
+		void addProjectile(std::shared_ptr<Moveable> a_moveable)
+		{
+			QMutexLocker l(&mutex);
+			m_list.push_back(a_moveable);
+		}
+
+		void removeProjectile(Moveable* a_moveable)
+		{
+			QMutexLocker l(&mutex);
+			for (auto it = m_list.begin(); it != m_list.end(); ++it)
+			{
+				if (it->get() == a_moveable)
+				{
+					m_list.erase(it);
+					break;
+				}
+			}
+		}
+
+		const std::vector<std::shared_ptr<Moveable>> getList() const
+		{
+			return m_list;
+		}
+
+		void setList(std::vector<std::shared_ptr<Moveable>> a_list)
+		{
+			m_list = a_list;
+		}
+
+		size_t num_elements() const
+		{
+			return m_list.size();
+		}
+
+	} m_projectiles;
 
 public:
 	Game();
@@ -43,7 +91,12 @@ public:
 	void clear_sight();
 	void render();
 
-	void addIndependentMovable(std::shared_ptr<Moveable> a_moveable);
+	void addProjectile(std::shared_ptr<Moveable> a_moveable);
+	void removeProjectile(Moveable* a_moveable);
+
+	sf::FloatRect getRect() const;
+
+	size_t num_elements() const;
 
 public:
 	operator bool();

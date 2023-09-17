@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Game.h"
 #include <filesystem>
+#include <QString>
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 
@@ -33,23 +34,29 @@ int main(int argc, char** argv)
     time_gone_text.setFillColor(sf::Color::White);
     time_gone_text.setCharacterSize(12);
 
-    double millis_gone = 0;
+    double millis_gone = 0, cycle_time, fps;
     int keyTime = 0;
 
     while ((bool)game)
     {
         game.poll();
                 
-        millis_gone += game.update(keyTime);
-
+        cycle_time = game.update(keyTime);
+        millis_gone += cycle_time;
+        
         const std::shared_ptr<Player> p = game.getPlayer();
         if (p->getPosition().x < 0)
         {
             millis_gone = 0;
         }
         else if (p->getPosition().x + p->getSize().x < OrientedWidth) {
-            time_gone_text.setString(std::to_string(millis_gone));
-            time_gone_text.setPosition(sf::Vector2f((OrientedWidth - time_gone_text.getLocalBounds().width), (OrientedHeight - 2*time_gone_text.getLocalBounds().height)));
+            if (cycle_time)
+            {
+                fps = (cycle_time != 0) ? (1 / cycle_time) : 0;
+                time_gone_text.setString(QString().asprintf("%.0f fps, %d obj", fps, game.num_elements()).toStdString());
+                std::cout << ((std::string)time_gone_text.getString()) << std::endl;
+                time_gone_text.setPosition(sf::Vector2f((OrientedWidth - 2 * time_gone_text.getLocalBounds().width), (OrientedHeight - 2 * time_gone_text.getLocalBounds().height)));
+            }
         }
         else millis_gone = 0;
         
@@ -57,7 +64,6 @@ int main(int argc, char** argv)
         game.draw(time_gone_text);
         game.render();
     }
-
     return 0;
 }
 

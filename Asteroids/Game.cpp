@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include "Weapon.h"
+
 #include <qfuture.h>
 #include <QtConcurrent>
 
@@ -22,7 +24,7 @@ void Game::init_window(sf::Vector2f window_size)
 
 void Game::init_variables()
 {
-	m_player = std::make_shared<Player>(video_mode.width / 10, video_mode.height / 10, 192, this);
+	m_player = std::make_shared<Player>(video_mode.width / 10, video_mode.height / 10, 192, std::make_shared<Gun1>(), this);
 
 	m_player->setPosition(sf::Vector2f(0, 0));
 	m_player->setFillColor(sf::Color::Green);
@@ -44,6 +46,11 @@ void Game::draw(sf::Drawable& drawable)
 		window->draw(drawable);
 }
 
+void callMove(std::shared_ptr<Moveable> mov, float dt)
+{
+	mov->move(dt);
+}
+
 float Game::update(int& keyTime)
 {
 	if (keyTime++ < KeyboardReader::KeyTargetTime - 1) {
@@ -51,22 +58,16 @@ float Game::update(int& keyTime)
 	}
 
 	float dt = DeltaTime();
-	std::vector<QFuture<void>> futures;
+	if (dt == 0)
+		return 0;
 
-	for (std::shared_ptr<Moveable> p : m_moveables)
+	ProjectilesProtected projectiles_copy(m_projectiles.getList());
+
+	for (std::shared_ptr<Moveable> p : projectiles_copy.getList())
 	{
-		futures.push_back(QtConcurrent::run([&]()
-			{
-				if (p.get() == nullptr)
-				{
-					qDebug() << "Huh";
-				}else
-					p->move(dt);
-			}));
+		p->move(dt);
 	}
-	for (auto f : futures)
-		f.waitForFinished();
-
+	
 	m_player->move(dt);
 	keyTime = 0;
 
@@ -104,7 +105,7 @@ void Game::render()
 		return;
 
 	window->draw(*m_player);
-	for (std::shared_ptr<Moveable> moveable : m_moveables)
+	for (std::shared_ptr<Moveable> moveable : m_projectiles.getList())
 	{
 		window->draw(*moveable);
 	}
@@ -112,9 +113,24 @@ void Game::render()
 	window->display();
 }
 
-void Game::addIndependentMovable(std::shared_ptr<Moveable> a_moveable)
+void Game::addProjectile(std::shared_ptr<Moveable> a_moveable)
 {
-	m_moveables.push_back(a_moveable);
+	m_projectiles.addProjectile(a_moveable);
+}
+
+void Game::removeProjectile(Moveable* a_moveable)
+{
+	m_projectiles.removeProjectile(a_moveable);
+}
+
+sf::FloatRect Game::getRect() const
+{
+	return sf::FloatRect(0, 0, video_mode.width, video_mode.height);
+}
+
+size_t Game::num_elements() const
+{
+	return 1 + m_projectiles.num_elements();
 }
 
 Game::operator bool()

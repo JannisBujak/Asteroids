@@ -10,6 +10,5 @@ private:
 public:
 	Projectile(sf::Vector2f a_position, sf::Vector2f a_size, sf::Vector2f a_movement, Game* a_game);
 
-
 	virtual void move(float factor) override;
 };

@@ -1,15 +1,20 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Game.h"
+#include "Weapon.h"
 
 
-Player::Player(float width, float height, float movement_speed, Game* a_game)
-	: Moveable(sf::Vector2f(width, height), a_game), movement_speed(movement_speed)
+Player::Player(float width, float height, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game)
+	: Moveable(sf::Vector2f(width, height), a_game)
+	, movement_speed(movement_speed)
+	, m_weapon(a_weapon)
 {
 }
 
-Player::Player(const sf::Vector2f& size, float movement_speed, Game* a_game)
-	: Moveable(size, a_game), movement_speed(movement_speed)
+Player::Player(const sf::Vector2f& size, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game)
+	: Moveable(size, a_game)
+	, movement_speed(movement_speed)
+	, m_weapon(a_weapon)
 {
 }
 
@@ -58,7 +63,13 @@ void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directi
 			horiz -= vert_horiz_speed;
 			break;
 		case KeyboardReader::Command::Shoot:
-			game()->addIndependentMovable(std::make_shared<Projectile>(getCenter(), sf::Vector2f(10, 10), sf::Vector2f(100, 0), game()));
+			if (m_weapon)
+			{
+				auto proj = m_weapon->produceProjectile(getCenter(), game());
+				if (proj)
+					game()->addProjectile(proj);
+			}
+				
 		}
 	}
 	if (horiz != 0 && vert != 0)
