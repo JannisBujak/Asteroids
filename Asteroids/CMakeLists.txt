@@ -18,11 +18,21 @@ set(CMAKE_CXX_STANDARD 17)
 set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/SFML-2.5.1-windows-vc15-64-bit")
 
 target_compile_options(Asteroids PUBLIC "/Zc:__cplusplus")
-target_include_directories(Asteroids PRIVATE "${SFML_PATH}/include")
 
-set(CMAKE_PREFIX_PATH "${SFML_PATH}/lib/cmake")
+target_include_directories(Asteroids PRIVATE "${SFML_PATH}/include")
+target_include_directories(Asteroids PRIVATE "$ENV{QTDIR}/include")
+
+list(APPEND CMAKE_PREFIX_PATH "${SFML_PATH}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{QTDIR}")
+
+message("$ENV{QTDIR}/lib/cmake")
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SFML_PATH}/bin")
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Concurrent)
 
 target_link_libraries(Asteroids sfml-graphics sfml-audio)
+target_link_libraries(Asteroids Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Concurrent)
+
+

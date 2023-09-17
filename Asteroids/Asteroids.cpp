@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "Game.h"
 #include <filesystem>
+#include <qapplication.h>
+#include <QtConcurrent>
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 

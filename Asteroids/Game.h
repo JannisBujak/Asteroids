@@ -16,7 +16,8 @@ private:
 	sf::Event ev;
 	sf::VideoMode video_mode;
 
-	std::vector<Moveable*> players;
+	Player* m_player;
+	std::vector<Moveable*> m_moveables;
 
 public:
 	Game();

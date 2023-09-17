@@ -15,7 +15,8 @@ Game::~Game()
 {
 	delete window;
 	
-	for (Moveable* moveable : players)
+	delete m_player;
+	for (Moveable* moveable : m_moveables)
 	{
 		delete moveable;
 	}
@@ -29,11 +30,10 @@ void Game::init_window(sf::Vector2f window_size)
 
 void Game::init_variables()
 {
-	Player* player = new Player(video_mode.width / 10, video_mode.height / 10, 192);
+	m_player = new Player(video_mode.width / 10, video_mode.height / 10, 192);
 
-	player->setPosition(sf::Vector2f(0, 0));
-	player->setFillColor(sf::Color::Green);
-	players.push_back(player);
+	m_player->setPosition(sf::Vector2f(0, 0));
+	m_player->setFillColor(sf::Color::Green);
 }
 
 float Game::DeltaTime()
@@ -43,9 +43,7 @@ float Game::DeltaTime()
 
 const Player* Game::getPlayer(size_t index) const
 {
-	if (index >= players.size())
-		return nullptr;
-	return (Player*)(players.at(index));
+	return m_player;
 }
 
 void Game::draw(sf::Drawable& drawable)
@@ -62,7 +60,8 @@ float Game::update(int& keyTime)
 
 	float dt = DeltaTime();
 
-	for(Moveable* p : players)
+	m_player->move(dt);
+	for(Moveable* p : m_moveables)
 		p->move(dt);
 
 	keyTime = 0;
@@ -100,7 +99,8 @@ void Game::render()
 	if (!window)
 		return;
 
-	for (Moveable* moveable : players)
+	window->draw(*m_player);
+	for (Moveable* moveable : m_moveables)
 	{
 		window->draw(*moveable);
 	}
