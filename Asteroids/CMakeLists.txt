@@ -6,7 +6,7 @@
 file(GLOB CPP . *.cpp)
 file(GLOB HPP . *.h)
 
-add_executable (Asteroids ${HPP} ${CPP})
+add_executable (Asteroids ${HPP} ${CPP} "Projectile.h" "Projectile.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

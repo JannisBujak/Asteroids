@@ -19,19 +19,20 @@ public:
 	
 
 public:
-	Player(float width, float height, float movement_speed = 0);
-	Player(const sf::Vector2f& size, float movement_speed = 0);
+	Player(float width, float height, float movement_speed, Game* a_game);
+	Player(const sf::Vector2f& size, float movement_speed, Game* a_game);
 
 
 	void setMovementSpeed(float movement_speed);
 	float getMovementSpeed() const;
 
+	sf::Vector2f getCenter() const;
 
 public:
 	static float horiz_vert_movement_from_diagonal(float c);
 
 public:
-	void moveByDirections(std::vector<KeyboardReader::Direction> given_directions, float factor);
+	void moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor);
 	
 	// factor depends on delta-time and the KeyTargetTime
 	void move(float factor);

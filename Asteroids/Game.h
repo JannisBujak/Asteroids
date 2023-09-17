@@ -7,23 +7,23 @@
 
 #include "KeyboardReader.h"
 
+#include <QList>
 
 class Game
 {
 private:
 	sf::Clock sysclock;
-	sf::RenderWindow* window;
+	std::shared_ptr<sf::RenderWindow> window;
 	sf::Event ev;
 	sf::VideoMode video_mode;
 
-	Player* m_player;
-	std::vector<Moveable*> m_moveables;
+	std::shared_ptr<Player> m_player;
+	QList<std::shared_ptr<Moveable>> m_moveables;
 
 public:
 	Game();
 	Game(sf::Vector2f window_size);
-	~Game();
-
+	
 private:
 	void init_window(sf::Vector2f window_size);
 	void init_variables();
@@ -32,7 +32,7 @@ private:
 public:
 	float DeltaTime();
 
-	const Player* getPlayer(size_t index = 0) const;
+	const std::shared_ptr<Player> getPlayer(size_t index = 0) const;
 	
 public:
 	void draw(sf::Drawable& drawable);
@@ -43,6 +43,7 @@ public:
 	void clear_sight();
 	void render();
 
+	void addIndependentMovable(std::shared_ptr<Moveable> a_moveable);
 
 public:
 	operator bool();

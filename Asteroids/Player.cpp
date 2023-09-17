@@ -1,13 +1,15 @@
 #include "Player.h"
+#include "Projectile.h"
+#include "Game.h"
 
 
-Player::Player(float width, float height, float movement_speed)
-	: Moveable(sf::Vector2f(width, height)), movement_speed(movement_speed)
+Player::Player(float width, float height, float movement_speed, Game* a_game)
+	: Moveable(sf::Vector2f(width, height), a_game), movement_speed(movement_speed)
 {
 }
 
-Player::Player(const sf::Vector2f& size, float movement_speed)
-	: Moveable(size), movement_speed(movement_speed)
+Player::Player(const sf::Vector2f& size, float movement_speed, Game* a_game)
+	: Moveable(size, a_game), movement_speed(movement_speed)
 {
 }
 
@@ -21,42 +23,48 @@ float Player::getMovementSpeed() const
 	return movement_speed;
 }
 
+sf::Vector2f Player::getCenter() const
+{
+	sf::Vector2f size = getSize();
+	return getPosition() + sf::Vector2f(0.5*size.x, 0.5*size.y);
+}
+
 float Player::horiz_vert_movement_from_diagonal(float c)
 {
 	return c / sqrt(2);
 }
 
-void Player::moveByDirections(std::vector<KeyboardReader::Direction> given_directions, float factor)
+void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor)
 {
 	float vert_horiz_speed = factor * movement_speed;
 	if (given_directions.empty())
 		return;
-	else if (given_directions.size() > 2)
-	{
-		std::string error_msg = "Wrong number of arguments, having " + std::to_string(given_directions.size()) + " directions given";
-		throw std::exception(error_msg.c_str());
-	}
-	else if (given_directions.size() == 2)
-		vert_horiz_speed = horiz_vert_movement_from_diagonal(vert_horiz_speed);
 
 	float horiz = 0, vert = 0;
-	for (KeyboardReader::Direction& dir : given_directions)
+	for (KeyboardReader::Command& dir : given_directions)
 	{
 		switch (dir)
 		{
-		case KeyboardReader::Direction::Up:
+		case KeyboardReader::Command::Up:
 			vert -= vert_horiz_speed;
 			break;
-		case KeyboardReader::Direction::Right:
+		case KeyboardReader::Command::Right:
 			horiz += vert_horiz_speed;
 			break;
-		case KeyboardReader::Direction::Down:
+		case KeyboardReader::Command::Down:
 			vert += vert_horiz_speed;
 			break;
-		case KeyboardReader::Direction::Left:
+		case KeyboardReader::Command::Left:
 			horiz -= vert_horiz_speed;
 			break;
+		case KeyboardReader::Command::Shoot:
+			game()->addIndependentMovable(std::make_shared<Projectile>(getCenter(), sf::Vector2f(10, 10), sf::Vector2f(100, 0), game()));
 		}
+	}
+	if (horiz != 0 && vert != 0)
+	{
+		vert /= sqrt(2);
+		horiz /= sqrt(2);
 	}
 	((sf::RectangleShape*)this)->move(horiz, vert);
 }
@@ -64,7 +72,7 @@ void Player::moveByDirections(std::vector<KeyboardReader::Direction> given_direc
 void Player::move(float factor)
 {
 	//std::vector<KeyboardReader::Direction> directions = getDirectionRemoveDuplicates(pressed_keys);
-	std::vector<KeyboardReader::Direction> directions = KeyboardReader::getDirections();
+	std::vector<KeyboardReader::Command> directions = KeyboardReader::getDirections();
 	if (directions.empty())
 		return;
 	moveByDirections(directions, factor);

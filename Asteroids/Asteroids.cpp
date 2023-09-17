@@ -8,8 +8,6 @@
 #include "Player.h"
 #include "Game.h"
 #include <filesystem>
-#include <qapplication.h>
-#include <QtConcurrent>
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 
@@ -44,7 +42,7 @@ int main(int argc, char** argv)
                 
         millis_gone += game.update(keyTime);
 
-        const Player* p = game.getPlayer();
+        const std::shared_ptr<Player> p = game.getPlayer();
         if (p->getPosition().x < 0)
         {
             millis_gone = 0;
