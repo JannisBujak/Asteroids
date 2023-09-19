@@ -8,7 +8,9 @@ private:
 	sf::Vector2f m_movement;
 
 public:
-	Projectile(sf::Vector2f a_position, sf::Vector2f a_size, sf::Vector2f a_movement, Game* a_game);
+	Projectile(sf::Vector2f a_position, float a_size, sf::Vector2f a_movement, Game* a_game);
 
 	virtual void move(float factor) override;
+
+	virtual const sf::Vector2f& getSize() const override;
 };

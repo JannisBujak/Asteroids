@@ -26,7 +26,7 @@ void Game::init_variables()
 {
 	m_player = std::make_shared<Player>(video_mode.width / 10, video_mode.height / 10, 192, std::make_shared<Gun1>(), this);
 
-	m_player->setPosition(sf::Vector2f(0, 0));
+ 	m_player->setPosition(sf::Vector2f(window->getSize().x/2, window->getSize().y/2));
 	m_player->setFillColor(sf::Color::Green);
 }
 
@@ -104,10 +104,10 @@ void Game::render()
 	if (!window)
 		return;
 
-	window->draw(*m_player);
+	window->draw(*m_player->shape());
 	for (std::shared_ptr<Moveable> moveable : m_projectiles.getList())
 	{
-		window->draw(*moveable);
+		window->draw(*moveable->shape());
 	}
 
 	window->display();

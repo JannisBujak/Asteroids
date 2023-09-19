@@ -28,14 +28,17 @@ private:
 
 	public:
 		ProjectilesProtected() = default;
+
 		ProjectilesProtected(std::vector<std::shared_ptr<Moveable>> a_list)
 			: m_list(a_list)
-		{}
+		{
 
-		void addProjectile(std::shared_ptr<Moveable> a_moveable)
+		}
+
+		void addProjectile(std::shared_ptr<Moveable> a_projectile)
 		{
 			QMutexLocker l(&mutex);
-			m_list.push_back(a_moveable);
+			m_list.push_back(a_projectile);
 		}
 
 		void removeProjectile(Moveable* a_moveable)

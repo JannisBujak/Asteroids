@@ -20,5 +20,5 @@ class Gun1 : public Weapon
 public:
 	Gun1() = default;
 
-	virtual std::shared_ptr<Projectile> produceProjectile(sf::Vector2f pos, Game* game) override;
+	virtual std::shared_ptr<Projectile> produceProjectile(sf::Vector2f a_pos, Game* game) override;
 };

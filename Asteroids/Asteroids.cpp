@@ -54,7 +54,7 @@ int main(int argc, char** argv)
             {
                 fps = (cycle_time != 0) ? (1 / cycle_time) : 0;
                 time_gone_text.setString(QString().asprintf("%.0f fps, %d obj", fps, game.num_elements()).toStdString());
-                std::cout << ((std::string)time_gone_text.getString()) << std::endl;
+                // std::cout << ((std::string)time_gone_text.getString()) << std::endl;
                 time_gone_text.setPosition(sf::Vector2f((OrientedWidth - 2 * time_gone_text.getLocalBounds().width), (OrientedHeight - 2 * time_gone_text.getLocalBounds().height)));
             }
         }

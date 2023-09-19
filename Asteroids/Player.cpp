@@ -5,33 +5,31 @@
 
 
 Player::Player(float width, float height, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game)
-	: Moveable(sf::Vector2f(width, height), a_game)
+	: Moveable(a_game)
 	, movement_speed(movement_speed)
 	, m_weapon(a_weapon)
 {
+	m_shape = std::make_shared<sf::RectangleShape>(sf::Vector2f(width, height));	
+	m_shape->setOrigin(width / 2, height / 2);
 }
 
 Player::Player(const sf::Vector2f& size, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game)
-	: Moveable(size, a_game)
+	: Moveable(a_game)
 	, movement_speed(movement_speed)
 	, m_weapon(a_weapon)
 {
-}
-
-void Player::setMovementSpeed(float movement_speed)
-{
-	this->movement_speed = movement_speed;
-}
-
-float Player::getMovementSpeed() const
-{
-	return movement_speed;
+	m_shape = std::make_shared<sf::RectangleShape>(size);			
+	m_shape->setOrigin(size.x/2, size.y/2);
 }
 
 sf::Vector2f Player::getCenter() const
 {
-	sf::Vector2f size = getSize();
-	return getPosition() + sf::Vector2f(0.5*size.x, 0.5*size.y);
+	return getPosition();
+}
+
+const sf::Vector2f& Player::getSize() const
+{
+	return dynamic_cast<sf::RectangleShape*>(m_shape.get())->getSize();
 }
 
 float Player::horiz_vert_movement_from_diagonal(float c)
@@ -39,29 +37,42 @@ float Player::horiz_vert_movement_from_diagonal(float c)
 	return c / sqrt(2);
 }
 
-void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor)
+float Player::angleDegIntoRed(float angle)
 {
-	float vert_horiz_speed = factor * movement_speed;
-	if (given_directions.empty())
-		return;
+	return angle * M_PI/ 180;
+}
 
-	float horiz = 0, vert = 0;
+void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions, float factor)
+{
+	sf::Vector2f acceleration_vec;
+	auto rectshape = dynamic_cast<sf::RectangleShape*>(m_shape.get());
+
+	float rotation = rectshape->getRotation();
+
 	for (KeyboardReader::Command& dir : given_directions)
 	{
 		switch (dir)
 		{
-		case KeyboardReader::Command::Up:
-			vert -= vert_horiz_speed;
-			break;
 		case KeyboardReader::Command::Right:
-			horiz += vert_horiz_speed;
-			break;
-		case KeyboardReader::Command::Down:
-			vert += vert_horiz_speed;
+			rectshape->rotate(TURN_SPEED * factor);
 			break;
 		case KeyboardReader::Command::Left:
-			horiz -= vert_horiz_speed;
+			rectshape->rotate(-TURN_SPEED * factor);
 			break;
+
+		case KeyboardReader::Command::Up:
+		case KeyboardReader::Command::Down:
+		{
+			sf::Vector2f vec = sf::Vector2f(cos(angleDegIntoRed(rotation)), sin(angleDegIntoRed(rotation)));
+			double f = pow(ACCELERATION * factor, 1);
+			// double f = pow(ACCELERATION, factor);
+			vec = ((dir == KeyboardReader::Command::Up) ? vec : -vec);
+			vec = sf::Vector2f(f * vec.x, f * vec.y);
+			auto add = m_moveSpeed + vec;
+			m_moveSpeed = add;
+			break;
+		}
+
 		case KeyboardReader::Command::Shoot:
 			if (m_weapon)
 			{
@@ -69,23 +80,24 @@ void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directi
 				if (proj)
 					game()->addProjectile(proj);
 			}
-				
+			break;
 		}
 	}
-	if (horiz != 0 && vert != 0)
+}
+
+void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor)
+{
+	if (!given_directions.empty())
 	{
-		vert /= sqrt(2);
-		horiz /= sqrt(2);
-	}
-	((sf::RectangleShape*)this)->move(horiz, vert);
+		handleInputs(given_directions, factor);
+	}	
+	moveShape(m_moveSpeed);
 }
 
 void Player::move(float factor)
 {
 	//std::vector<KeyboardReader::Direction> directions = getDirectionRemoveDuplicates(pressed_keys);
 	std::vector<KeyboardReader::Command> directions = KeyboardReader::getDirections();
-	if (directions.empty())
-		return;
 	moveByDirections(directions, factor);
 }
 
