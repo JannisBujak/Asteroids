@@ -91,6 +91,8 @@ void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directi
 	{
 		handleInputs(given_directions, factor);
 	}	
+	auto f = pow(1 - FRICTION, factor);;
+	m_moveSpeed *= f;
 	moveShape(m_moveSpeed);
 }
 
