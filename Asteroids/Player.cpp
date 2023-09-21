@@ -22,6 +22,13 @@ Player::Player(const sf::Vector2f& size, float movement_speed, std::shared_ptr<W
 	m_shape->setOrigin(size.x/2, size.y/2);
 }
 
+sf::Vector2f Player::PlayerDirection() const
+{
+	auto rectshape = dynamic_cast<sf::RectangleShape*>(m_shape.get());
+	float rotation = rectshape->getRotation();
+	return sf::Vector2f(cos(angleDegIntoRed(rotation)), sin(angleDegIntoRed(rotation)));
+}
+
 sf::Vector2f Player::getCenter() const
 {
 	return getPosition();
@@ -63,7 +70,7 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 		case KeyboardReader::Command::Up:
 		case KeyboardReader::Command::Down:
 		{
-			sf::Vector2f vec = sf::Vector2f(cos(angleDegIntoRed(rotation)), sin(angleDegIntoRed(rotation)));
+			sf::Vector2f vec = PlayerDirection();
 			double f = pow(ACCELERATION * factor, 1);
 			// double f = pow(ACCELERATION, factor);
 			vec = ((dir == KeyboardReader::Command::Up) ? vec : -vec);
@@ -76,7 +83,8 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 		case KeyboardReader::Command::Shoot:
 			if (m_weapon)
 			{
-				auto proj = m_weapon->produceProjectile(getCenter(), game());
+				sf::Vector2f dir = PlayerDirection();
+				auto proj = m_weapon->produceProjectile(getCenter(), dir, game());
 				if (proj)
 					game()->addProjectile(proj);
 			}
@@ -87,12 +95,11 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 
 void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor)
 {
+	m_moveSpeed *= pow(1 - FRICTION, factor);
 	if (!given_directions.empty())
 	{
 		handleInputs(given_directions, factor);
 	}	
-	auto f = pow(1 - FRICTION, factor);;
-	m_moveSpeed *= f;
 	moveShape(m_moveSpeed);
 }
 

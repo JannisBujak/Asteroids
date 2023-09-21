@@ -32,6 +32,7 @@ public:
 	Player(float width, float height, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game);
 	Player(const sf::Vector2f& size, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game);
 
+	sf::Vector2f PlayerDirection() const;
 
 	sf::Vector2f getCenter() const;
 
