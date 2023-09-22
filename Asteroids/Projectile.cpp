@@ -1,7 +1,7 @@
 #include "Projectile.h"
 #include "Game.h"
 
-Projectile::Projectile(sf::Vector2f a_position, float a_size, sf::Vector2f a_movement, Game* a_game)
+Projectile::Projectile(sf::Vector2f a_position, float a_size, sf::Vector2f a_movement, Game* a_game, Moveable* m_shooter)
 	: Moveable(a_game)
 	, m_movement(a_movement)
 {

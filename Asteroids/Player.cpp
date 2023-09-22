@@ -84,7 +84,7 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 			if (m_weapon)
 			{
 				sf::Vector2f dir = PlayerDirection();
-				auto proj = m_weapon->produceProjectile(getCenter(), dir, game());
+				auto proj = m_weapon->produceProjectile(getCenter(), dir, game(), this);
 				if (proj)
 					game()->addProjectile(proj);
 			}

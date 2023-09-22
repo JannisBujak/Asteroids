@@ -2,7 +2,7 @@
 **/.vs/**
 **/.vscode/**
 **.cmake
-!/lib/**.cmake
+!/lib/**
 **/.idea/**
 **/*build*/**
 **/CMakeFiles/**
