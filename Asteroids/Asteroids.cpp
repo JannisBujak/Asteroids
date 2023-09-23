@@ -15,7 +15,6 @@ const float OrientedWidth = 1920, OrientedHeight = 1080;
 int main(int argc, char** argv)
 {
     Game game(sf::Vector2f(1920, 1080));
-        
     sf::Text time_gone_text;
 
     // Declare a new font

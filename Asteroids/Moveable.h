@@ -21,6 +21,10 @@ public:
 		
 	virtual void move(float factor) = 0;
 
+	virtual sf::Vector2f getCenter() const
+	{
+		return m_shape->getPosition();
+	}
 
 	virtual const sf::Vector2f& getPosition() const
 	{
@@ -32,8 +36,7 @@ public:
 		m_shape->setPosition(a_position);
 	}
 
-	virtual const sf::Vector2f& getSize() const = 0;
-	
+	virtual const sf::Vector2f& getSize() const = 0;	
 
 
 	virtual void setFillColor(sf::Color a_color)
@@ -55,7 +58,6 @@ public:
 	{
 		m_shape->move(a_vector);
 	}
-
 
 	Game* game()
 	{

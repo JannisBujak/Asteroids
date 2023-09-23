@@ -34,7 +34,7 @@ public:
 
 	sf::Vector2f PlayerDirection() const;
 
-	sf::Vector2f getCenter() const;
+	virtual sf::Vector2f getCenter() const override;
 
 	virtual const sf::Vector2f& getSize() const override;	
 

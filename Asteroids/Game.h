@@ -10,6 +10,8 @@
 #include <QList>
 #include <QMutex>
 
+float PointDistance(sf::Vector2f a, sf::Vector2f b);
+
 class Game
 {
 private:
@@ -20,28 +22,28 @@ private:
 
 	std::shared_ptr<Player> m_player;
 
-	class ProjectilesProtected
+	class MoveableMutexList
 	{
 	private:
 		std::vector<std::shared_ptr<Moveable>> m_list;
 		QMutex mutex;
 
 	public:
-		ProjectilesProtected() = default;
+		MoveableMutexList() = default;
 
-		ProjectilesProtected(std::vector<std::shared_ptr<Moveable>> a_list)
+		MoveableMutexList(std::vector<std::shared_ptr<Moveable>> a_list)
 			: m_list(a_list)
 		{
 
 		}
 
-		void addProjectile(std::shared_ptr<Moveable> a_projectile)
+		void addObj(std::shared_ptr<Moveable> a_projectile)
 		{
 			QMutexLocker l(&mutex);
 			m_list.push_back(a_projectile);
 		}
 
-		void removeProjectile(Moveable* a_moveable)
+		void removeObj(Moveable* a_moveable)
 		{
 			QMutexLocker l(&mutex);
 			for (auto it = m_list.begin(); it != m_list.end(); ++it)
@@ -69,12 +71,14 @@ private:
 			return m_list.size();
 		}
 
-	} m_projectiles;
+	};
+	MoveableMutexList m_projectiles;
+	MoveableMutexList m_enemies;
 
 public:
 	Game();
 	Game(sf::Vector2f window_size);
-	
+
 private:
 	void init_window(sf::Vector2f window_size);
 	void init_variables();

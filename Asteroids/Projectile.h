@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Moveable.h"
 
 class Game;

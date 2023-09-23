@@ -1,9 +1,16 @@
 #include "Game.h"
 
 #include "Weapon.h"
+#include "Enemy.h"
 
 #include <qfuture.h>
 #include <QtConcurrent>
+
+
+float PointDistance(sf::Vector2f a, sf::Vector2f b)
+{
+	return sqrt(pow(b.x - a.x, 2) + pow(b.y-a.y, 2));
+}
 
 Game::Game()
 {
@@ -24,10 +31,15 @@ void Game::init_window(sf::Vector2f window_size)
 
 void Game::init_variables()
 {
+	// Player 
 	m_player = std::make_shared<Player>(video_mode.width / 10, video_mode.height / 10, 192, std::make_shared<Gun1>(), this);
 
  	m_player->setPosition(sf::Vector2f(window->getSize().x/2, window->getSize().y/2));
 	m_player->setFillColor(sf::Color::Green);
+
+	// Enemies
+	std::shared_ptr<ShootingEnemy> e = std::make_shared<Turret1>(sf::Vector2f(video_mode.width * 0.9, video_mode.height * 0.9), this);
+	m_enemies.addObj(e);
 }
 
 float Game::DeltaTime()
@@ -61,11 +73,16 @@ float Game::update(int& keyTime)
 	if (dt == 0)
 		return 0;
 
-	ProjectilesProtected projectiles_copy(m_projectiles.getList());
+	MoveableMutexList projectiles_copy(m_projectiles.getList());
 
 	for (std::shared_ptr<Moveable> p : projectiles_copy.getList())
 	{
 		p->move(dt);
+	}
+
+	for (std::shared_ptr<Moveable> enemy : m_enemies.getList())
+	{
+		enemy->move(dt);
 	}
 	
 	m_player->move(dt);
@@ -109,18 +126,22 @@ void Game::render()
 	{
 		window->draw(*moveable->shape());
 	}
+	for (std::shared_ptr<Moveable> enemy : m_enemies.getList())
+	{
+		window->draw(*enemy->shape());
+	}
 
 	window->display();
 }
 
 void Game::addProjectile(std::shared_ptr<Moveable> a_moveable)
 {
-	m_projectiles.addProjectile(a_moveable);
+	m_projectiles.addObj(a_moveable);
 }
 
 void Game::removeProjectile(Moveable* a_moveable)
 {
-	m_projectiles.removeProjectile(a_moveable);
+	m_projectiles.removeObj(a_moveable);
 }
 
 sf::FloatRect Game::getRect() const
@@ -137,3 +158,4 @@ Game::operator bool()
 {
 	return (window->isOpen());
 }
+

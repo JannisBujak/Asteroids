@@ -1,3 +1,5 @@
+#pragma once
+
 
 // #include "Projectile.h"
 #include <iostream>
@@ -5,14 +7,16 @@
 
 class Game;
 class Moveable;
-class Projectile;
 
 class Weapon
 {
 protected:
 	int64_t last_shot_ms;
 public:
-	virtual std::shared_ptr<Projectile> produceProjectile(sf::Vector2f a_pos, sf::Vector2f a_dir, Game* game, Moveable* m_shooter) = 0;
+	virtual int64_t getCooldown() const = 0;
+	virtual int64_t getBulletMovementSpeed() const = 0;
+
+	virtual std::shared_ptr<Moveable> produceProjectile(sf::Vector2f a_pos, sf::Vector2f a_dir, Game* game, Moveable* m_shooter);
 };
 
 class Gun1 : public Weapon
@@ -22,5 +26,18 @@ class Gun1 : public Weapon
 public:
 	Gun1() = default;
 
-	virtual std::shared_ptr<Projectile> produceProjectile(sf::Vector2f a_pos, sf::Vector2f a_dir, Game* game, Moveable* m_shooter) override;
+	virtual int64_t getCooldown() const override;
+	virtual int64_t getBulletMovementSpeed() const override;
+};
+
+
+class TurretGun1 : public Weapon
+{
+	const static int64_t COOLDOWN_MS = 1000;
+	inline const static int64_t BULLET_MOVEMENT_SPEED = 100;
+public:
+	TurretGun1() = default;
+
+	virtual int64_t getCooldown() const override;
+	virtual int64_t getBulletMovementSpeed() const override;
 };

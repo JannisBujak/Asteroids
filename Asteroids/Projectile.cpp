@@ -7,6 +7,7 @@ Projectile::Projectile(sf::Vector2f a_position, float a_size, sf::Vector2f a_mov
 {
 	m_shape = std::make_shared<sf::CircleShape>(a_size);
 	m_shape->setPosition(a_position);
+	m_shape->setOrigin(a_size/2, a_size/2);
 }
 
 void Projectile::move(float factor)
