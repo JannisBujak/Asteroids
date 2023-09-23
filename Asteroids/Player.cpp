@@ -51,6 +51,7 @@ float Player::angleDegIntoRed(float angle)
 
 void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions, float factor)
 {
+	static bool acc_mode; 
 	sf::Vector2f acceleration_vec;
 	auto rectshape = dynamic_cast<sf::RectangleShape*>(m_shape.get());
 
@@ -71,8 +72,9 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 		case KeyboardReader::Command::Down:
 		{
 			sf::Vector2f vec = PlayerDirection();
-			double f = pow(ACCELERATION * factor, 1);
+			double f = ACCELERATION*factor;
 			// double f = pow(ACCELERATION, factor);
+			
 			vec = ((dir == KeyboardReader::Command::Up) ? vec : -vec);
 			vec = sf::Vector2f(f * vec.x, f * vec.y);
 			auto add = m_moveSpeed + vec;
@@ -95,12 +97,12 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 
 void Player::moveByDirections(std::vector<KeyboardReader::Command> given_directions, float factor)
 {
-	m_moveSpeed *= pow(1 - FRICTION, factor);
+	m_moveSpeed *= (1 - FRICTION * factor);
 	if (!given_directions.empty())
 	{
 		handleInputs(given_directions, factor);
 	}	
-	moveShape(m_moveSpeed);
+	moveShape(m_moveSpeed*factor);
 }
 
 void Player::move(float factor)

@@ -12,6 +12,12 @@ float PointDistance(sf::Vector2f a, sf::Vector2f b)
 	return sqrt(pow(b.x - a.x, 2) + pow(b.y-a.y, 2));
 }
 
+sf::Vector2f NormalizeVector(sf::Vector2f v)
+{
+	float len = 1 / sqrt(v.x * v.x + v.y * v.y);
+	return sf::Vector2f(v.x * len, v.y * len);
+}
+
 Game::Game()
 {
 }
@@ -20,7 +26,7 @@ Game::Game(sf::Vector2f window_size)
 	: sysclock(sf::Clock())
 {
 	init_window(window_size);
-	init_variables();
+	ReinitMoveables();
 }
 
 void Game::init_window(sf::Vector2f window_size)
@@ -29,15 +35,19 @@ void Game::init_window(sf::Vector2f window_size)
 	window = std::make_shared<sf::RenderWindow>(video_mode, "Gaming", sf::Style::Close | sf::Style::Titlebar);
 }
 
-void Game::init_variables()
+void Game::ReinitMoveables()
 {
 	// Player 
 	m_player = std::make_shared<Player>(video_mode.width / 10, video_mode.height / 10, 192, std::make_shared<Gun1>(), this);
 
- 	m_player->setPosition(sf::Vector2f(window->getSize().x/2, window->getSize().y/2));
+	m_player->setPosition(sf::Vector2f(window->getSize().x / 2, window->getSize().y / 2));
 	m_player->setFillColor(sf::Color::Green);
+	
+	// Projectiles
+	m_projectiles.clearList();
 
 	// Enemies
+	m_enemies.clearList();
 	std::shared_ptr<ShootingEnemy> e = std::make_shared<Turret1>(sf::Vector2f(video_mode.width * 0.9, video_mode.height * 0.9), this);
 	m_enemies.addObj(e);
 }

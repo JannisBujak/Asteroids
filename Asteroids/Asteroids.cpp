@@ -9,6 +9,7 @@
 #include "Game.h"
 #include <filesystem>
 #include <QString>
+#include <QDateTime>
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 
@@ -35,11 +36,35 @@ int main(int argc, char** argv)
 
     double millis_gone = 0, cycle_time, fps;
     int keyTime = 0;
+    
+    bool limitFPS = false;
+    uint64_t listFPSToggleTS = 0;
+    uint64_t now_ms;
 
     while ((bool)game)
     {
         game.poll();
-                
+        
+        std::vector<KeyboardReader::Command> commands = KeyboardReader::getDirections();
+        for (KeyboardReader::Command& dir : commands)
+        {
+            switch (dir)
+            {
+            case KeyboardReader::Command::SwitchLimitFPS:
+                now_ms = QDateTime::currentDateTime().toMSecsSinceEpoch();
+                if (now_ms - listFPSToggleTS > 1000)
+                {
+                    limitFPS = !limitFPS;
+                    std::cout << "Limit fps set to " << limitFPS << std::endl;
+                    listFPSToggleTS = now_ms;
+                }
+                    break;
+                case KeyboardReader::Command::Reset:
+                    game.ReinitMoveables();             
+                    break;
+            }
+        }
+
         cycle_time = game.update(keyTime);
         millis_gone += cycle_time;
         
@@ -62,6 +87,11 @@ int main(int argc, char** argv)
         game.clear_sight();
         game.draw(time_gone_text);
         game.render();
+        if (limitFPS)
+        {
+            std::this_thread::sleep_for(std::chrono::microseconds(1));
+        }
+
     }
     return 0;
 }

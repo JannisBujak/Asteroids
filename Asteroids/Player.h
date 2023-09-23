@@ -20,8 +20,8 @@ private:
 	
 	sf::Vector2f m_moveSpeed;
 	inline static const float TURN_SPEED = 100;
-	inline static const float FRICTION = 0.5;
-	inline static const double ACCELERATION = 1;
+	inline static const float FRICTION = 0.8;
+	inline static const double ACCELERATION = 2000;
 
 
 	std::shared_ptr<Weapon> m_weapon;

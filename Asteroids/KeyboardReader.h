@@ -14,6 +14,8 @@ public:
 		Down,
 		Left,
 		Shoot,
+		SwitchLimitFPS,
+		Reset,
 		None
 	};
 

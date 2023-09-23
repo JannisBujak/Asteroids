@@ -30,6 +30,8 @@ void KeyboardReader::initializeKeyMap()
 		{sf::Keyboard::Left, KeyboardReader::Command::Left},
 		{sf::Keyboard::A, KeyboardReader::Command::Left},
 		{sf::Keyboard::Space, KeyboardReader::Command::Shoot},
+		{sf::Keyboard::R, KeyboardReader::Command::Reset},
+		{sf::Keyboard::L, KeyboardReader::Command::SwitchLimitFPS},
 
 	};
 	for (KeyMapping& mapping : mappings)

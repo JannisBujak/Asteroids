@@ -11,6 +11,7 @@
 #include <QMutex>
 
 float PointDistance(sf::Vector2f a, sf::Vector2f b);
+sf::Vector2f NormalizeVector(sf::Vector2f v);
 
 class Game
 {
@@ -56,6 +57,12 @@ private:
 			}
 		}
 
+		void clearList()
+		{
+			QMutexLocker l(&mutex);
+			m_list.clear();
+		}
+
 		const std::vector<std::shared_ptr<Moveable>> getList() const
 		{
 			return m_list;
@@ -81,8 +88,9 @@ public:
 
 private:
 	void init_window(sf::Vector2f window_size);
-	void init_variables();
 	
+public:
+	void ReinitMoveables();
 
 public:
 	float DeltaTime();
