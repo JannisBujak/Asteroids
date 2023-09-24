@@ -8,7 +8,8 @@
 #include "Player.h"
 #include "Game.h"
 #include <filesystem>
-#include <stdio.h>
+#include <cstdio>
+#include <thread>
 
 /*
 #include <QString>
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
     sf::Font font;
     // Load it from a file
 
-    if (!font.loadFromFile("../../../../res/arial.ttf"))
+    if (!font.loadFromFile("../../../../../res/arial.ttf"))
     {
         // error...
         std::cout << "Could not load font" << std::endl;
@@ -84,7 +85,7 @@ int main(int argc, char** argv)
                 fps = (cycle_time != 0) ? (1 / cycle_time) : 0;
                 
                 char buffer[200];
-                sprintf_s(buffer, sizeof(buffer), "%.0f fps, %u obj", fps, game.num_elements());
+                sprintf(buffer, "%.0f fps, %u obj", fps, game.num_elements());
                 time_gone_text.setString(buffer);
 
                 time_gone_text.setPosition(sf::Vector2f((OrientedWidth - 2 * time_gone_text.getLocalBounds().width), (OrientedHeight - 2 * time_gone_text.getLocalBounds().height)));

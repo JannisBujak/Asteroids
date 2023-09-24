@@ -12,7 +12,8 @@ add_executable (Asteroids ${HPP} ${CPP})
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Asteroids PROPERTY CXX_STANDARD 20)
 endif()
-set(SFML_STATIC_LIBRARIES TRUE)
+
+# set(SFML_STATIC_LIBRARIES TRUE)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -21,10 +22,11 @@ if (MSVC)
 endif (MSVC)
 
 if (UNIX)
+	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/UNIX/SFML-2.6.0")
 	message("UNIX")
 endif (UNIX)
 
-target_compile_options(Asteroids PUBLIC "/Zc:__cplusplus")
+# target_compile_options(Asteroids PUBLIC "/Zc:__cplusplus")
 
 target_include_directories(Asteroids PRIVATE "${SFML_PATH}/include")
 # target_include_directories(Asteroids PRIVATE "$ENV{QTDIR}/include")

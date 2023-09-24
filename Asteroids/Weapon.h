@@ -4,6 +4,7 @@
 // #include "Projectile.h"
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class Game;
 class Moveable;

@@ -2,6 +2,7 @@
 
 #include "Moveable.h"
 #include "Weapon.h"
+#include <memory>
 
 class ShootingEnemy : public Moveable
 {
