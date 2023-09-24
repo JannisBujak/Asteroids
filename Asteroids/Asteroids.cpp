@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     sf::Font font;
     // Load it from a file
 
-    if (!font.loadFromFile("../../../../../res/arial.ttf"))
+    if (!font.loadFromFile("../../../../res/arial.ttf"))
     {
         // error...
         std::cout << "Could not load font" << std::endl;

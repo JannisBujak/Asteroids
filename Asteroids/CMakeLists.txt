@@ -1,4 +1,5 @@
-﻿# CMakeList.txt : CMake project for QTProject, include source and define
+﻿
+# CMakeList.txt : CMake project for QTProject, include source and define
 # project specific logic here.
 #
 
@@ -13,15 +14,14 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Asteroids PROPERTY CXX_STANDARD 20)
 endif()
 
-# set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_STATIC_LIBRARIES TRUE)
 
 set(CMAKE_CXX_STANDARD 17)
 
+
 if (MSVC)
 	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/MSVC/SFML-2.5.1-windows-vc15-64-bit")
-endif (MSVC)
-
-if (UNIX)
+elseif (UNIX)
 	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/UNIX/SFML-2.6.0")
 	message("UNIX")
 endif (UNIX)
