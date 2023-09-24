@@ -15,7 +15,14 @@ endif()
 set(SFML_STATIC_LIBRARIES TRUE)
 
 set(CMAKE_CXX_STANDARD 17)
-set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/SFML-2.5.1-windows-vc15-64-bit")
+
+if (MSVC)
+	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/MSVC/SFML-2.5.1-windows-vc15-64-bit")
+endif (MSVC)
+
+if (UNIX)
+	message("UNIX")
+endif (UNIX)
 
 target_compile_options(Asteroids PUBLIC "/Zc:__cplusplus")
 
