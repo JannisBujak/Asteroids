@@ -22,7 +22,7 @@ if (MSVC)
 endif (MSVC)
 
 if (UNIX)
-	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/UNIX/SFML-2.6.0")
+	set(SFML_PATH "${PROJECT_SOURCE_DIR}/lib/UNIX/SFML_2.6.0_Linux")
 	message("UNIX")
 endif (UNIX)
 
@@ -37,6 +37,9 @@ list(APPEND CMAKE_PREFIX_PATH "${SFML_PATH}")
 # message("$ENV{QTDIR}/lib/cmake")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SFML_PATH}/bin")
+
+# Link SFML libraries
+target_link_libraries(Asteroids sfml-graphics sfml-window sfml-system)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 # find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Concurrent)
