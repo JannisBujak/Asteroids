@@ -8,8 +8,12 @@
 #include "Player.h"
 #include "Game.h"
 #include <filesystem>
+#include <stdio.h>
+
+/*
 #include <QString>
 #include <QDateTime>
+*/
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 
@@ -51,6 +55,7 @@ int main(int argc, char** argv)
             switch (dir)
             {
             case KeyboardReader::Command::SwitchLimitFPS:
+                /*
                 now_ms = QDateTime::currentDateTime().toMSecsSinceEpoch();
                 if (now_ms - listFPSToggleTS > 1000)
                 {
@@ -61,6 +66,7 @@ int main(int argc, char** argv)
                     break;
                 case KeyboardReader::Command::Reset:
                     game.ReinitMoveables();             
+                    */
                     break;
             }
         }
@@ -77,7 +83,12 @@ int main(int argc, char** argv)
             if (cycle_time)
             {
                 fps = (cycle_time != 0) ? (1 / cycle_time) : 0;
-                time_gone_text.setString(QString().asprintf("%.0f fps, %d obj", fps, game.num_elements()).toStdString());
+                // time_gone_text.setString(QString().asprintf("%.0f fps, %d obj", fps, game.num_elements()).toStdString());
+                
+                char buffer[200];
+                // sprintf_s(buffer, sizeof(buffer), "%.0f fps, %d obj", fps, game.num_elements()).toStdString();
+                time_gone_text.setString(buffer);
+
                 // std::cout << ((std::string)time_gone_text.getString()) << std::endl;
                 time_gone_text.setPosition(sf::Vector2f((OrientedWidth - 2 * time_gone_text.getLocalBounds().width), (OrientedHeight - 2 * time_gone_text.getLocalBounds().height)));
             }

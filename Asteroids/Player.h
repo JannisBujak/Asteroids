@@ -9,6 +9,8 @@
 #include <iostream>
 #include <algorithm>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 class Weapon;
 

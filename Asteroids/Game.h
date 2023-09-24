@@ -7,11 +7,14 @@
 
 #include "KeyboardReader.h"
 
+/*
 #include <QList>
 #include <QMutex>
+*/
 
 float PointDistance(sf::Vector2f a, sf::Vector2f b);
 sf::Vector2f NormalizeVector(sf::Vector2f v);
+uint64_t Millis();
 
 class Game
 {
@@ -27,7 +30,7 @@ private:
 	{
 	private:
 		std::vector<std::shared_ptr<Moveable>> m_list;
-		QMutex mutex;
+		// QMutex mutex;
 
 	public:
 		MoveableMutexList() = default;
@@ -40,13 +43,13 @@ private:
 
 		void addObj(std::shared_ptr<Moveable> a_projectile)
 		{
-			QMutexLocker l(&mutex);
+			// QMutexLocker l(&mutex);
 			m_list.push_back(a_projectile);
 		}
 
 		void removeObj(Moveable* a_moveable)
 		{
-			QMutexLocker l(&mutex);
+			// QMutexLocker l(&mutex);
 			for (auto it = m_list.begin(); it != m_list.end(); ++it)
 			{
 				if (it->get() == a_moveable)
@@ -59,7 +62,7 @@ private:
 
 		void clearList()
 		{
-			QMutexLocker l(&mutex);
+			// QMutexLocker l(&mutex);
 			m_list.clear();
 		}
 

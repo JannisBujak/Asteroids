@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "Weapon.h"
 
-
 Player::Player(float width, float height, float movement_speed, std::shared_ptr<Weapon> a_weapon, Game* a_game)
 	: Moveable(a_game)
 	, movement_speed(movement_speed)
@@ -46,7 +45,7 @@ float Player::horiz_vert_movement_from_diagonal(float c)
 
 float Player::angleDegIntoRed(float angle)
 {
-	return angle * M_PI/ 180;
+	return angle * M_PI / 180;
 }
 
 void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions, float factor)

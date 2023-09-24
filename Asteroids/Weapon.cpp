@@ -2,12 +2,11 @@
 #include "Game.h"
 #include "Projectile.h"
 
-#include <QDateTime>
-
+// #include <QDateTime>
 
 std::shared_ptr<Moveable> Weapon::produceProjectile(sf::Vector2f a_pos, sf::Vector2f a_dir, Game* game, Moveable* m_shooter)
 {
-	int64_t now_ms = QDateTime::currentDateTime().toMSecsSinceEpoch();
+	int64_t now_ms = Millis();
 	if (now_ms - last_shot_ms > getCooldown())
 	{
 		last_shot_ms = now_ms;

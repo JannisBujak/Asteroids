@@ -2,10 +2,12 @@
 
 #include "Weapon.h"
 #include "Enemy.h"
+#include <chrono>
 
+/*
 #include <qfuture.h>
 #include <QtConcurrent>
-
+*/
 
 float PointDistance(sf::Vector2f a, sf::Vector2f b)
 {
@@ -16,6 +18,17 @@ sf::Vector2f NormalizeVector(sf::Vector2f v)
 {
 	float len = 1 / sqrt(v.x * v.x + v.y * v.y);
 	return sf::Vector2f(v.x * len, v.y * len);
+}
+
+uint64_t Millis()
+{
+	uint64_t millis;
+	using namespace std::chrono;
+	time_point<system_clock> now =
+		system_clock::now();
+	auto duration = now.time_since_epoch();
+	millis = duration_cast<milliseconds>(duration).count();
+	return millis;
 }
 
 Game::Game()
