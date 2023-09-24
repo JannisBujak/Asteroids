@@ -55,8 +55,7 @@ int main(int argc, char** argv)
             switch (dir)
             {
             case KeyboardReader::Command::SwitchLimitFPS:
-                /*
-                now_ms = QDateTime::currentDateTime().toMSecsSinceEpoch();
+                now_ms = Millis();
                 if (now_ms - listFPSToggleTS > 1000)
                 {
                     limitFPS = !limitFPS;
@@ -66,7 +65,7 @@ int main(int argc, char** argv)
                     break;
                 case KeyboardReader::Command::Reset:
                     game.ReinitMoveables();             
-                    */
+                    
                     break;
             }
         }
@@ -86,7 +85,7 @@ int main(int argc, char** argv)
                 // time_gone_text.setString(QString().asprintf("%.0f fps, %d obj", fps, game.num_elements()).toStdString());
                 
                 char buffer[200];
-                // sprintf_s(buffer, sizeof(buffer), "%.0f fps, %d obj", fps, game.num_elements()).toStdString();
+                sprintf_s(buffer, sizeof(buffer), "%.0f fps, %u obj", fps, game.num_elements());
                 time_gone_text.setString(buffer);
 
                 // std::cout << ((std::string)time_gone_text.getString()) << std::endl;
