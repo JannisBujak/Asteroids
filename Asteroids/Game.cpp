@@ -4,10 +4,10 @@
 #include "Enemy.h"
 #include <chrono>
 
-/*
-#include <qfuture.h>
-#include <QtConcurrent>
-*/
+#include <QDir>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 float PointDistance(sf::Vector2f a, sf::Vector2f b)
 {
@@ -56,13 +56,12 @@ void Game::ReinitMoveables()
 	m_player->setPosition(sf::Vector2f(window->getSize().x / 2, window->getSize().y / 2));
 	m_player->setFillColor(sf::Color::Green);
 	
-	// Projectiles
-	m_projectiles.clearList();
-
-	// Enemies
-	m_enemies.clearList();
+	// Projectiles & Enemies
+	m_moveables.clear();
+	m_moveables.push_back(m_player);
+	
 	std::shared_ptr<ShootingEnemy> e = std::make_shared<Turret1>(sf::Vector2f(video_mode.width * 0.9, video_mode.height * 0.9), this);
-	m_enemies.addObj(e);
+	m_moveables.push_back(e);
 }
 
 float Game::DeltaTime()
@@ -95,23 +94,54 @@ float Game::update(int& keyTime)
 	float dt = DeltaTime();
 	if (dt == 0)
 		return 0;
-
-	MoveableMutexList projectiles_copy(m_projectiles.getList());
-
-	for (std::shared_ptr<Moveable> p : projectiles_copy.getList())
+	
+	MoveableMutexList moveables_copy(m_moveables);
+	for (std::shared_ptr<Moveable> m : moveables_copy)
 	{
-		p->move(dt);
-	}
-
-	for (std::shared_ptr<Moveable> enemy : m_enemies.getList())
-	{
-		enemy->move(dt);
+		m->move(dt);
 	}
 	
-	m_player->move(dt);
 	keyTime = 0;
 
 	return dt;
+}
+
+QPair<QString, QString> Game::getPathBaename(QString a_filename)
+{
+	QFileInfo info(a_filename);
+	QString basename = info.fileName();
+	return QPair<QString, QString>(a_filename.remove(basename), basename);
+}
+
+bool Game::openFileCreateDirIfNotEx(QString a_filename, QFile& a_file, QIODeviceBase::OpenMode a_openmode)
+{
+	auto [path, filename] = getPathBaename(a_filename);
+	QDir dir(path);
+
+	if (!dir.exists())
+	{
+		if (!dir.mkpath("."))
+			return false;
+	}
+	a_file.setFileName(a_filename);
+	return a_file.open(a_openmode);
+}
+
+void Game::saveAsJson() const
+{
+	QFile jsonfile;
+	bool succ = openFileCreateDirIfNotEx(QString("%1/temp/Asteroids/Levels.json").arg(QDir::homePath()), jsonfile, QIODeviceBase::Truncate | QIODeviceBase::ReadWrite);
+
+	QJsonArray array;
+	for (auto& m : m_moveables)
+	{
+		auto json_obj = m->toJson();
+		if (!json_obj.empty())
+		{
+			array.push_back(json_obj);
+		}
+	}
+	int written = jsonfile.write(QJsonDocument(array).toJson(QJsonDocument::Compact));
 }
 
 void Game::poll()
@@ -144,27 +174,22 @@ void Game::render()
 	if (!window)
 		return;
 
-	window->draw(*m_player->shape());
-	for (std::shared_ptr<Moveable> moveable : m_projectiles.getList())
+	for (std::shared_ptr<Moveable> moveable : m_moveables)
 	{
 		window->draw(*moveable->shape());
 	}
-	for (std::shared_ptr<Moveable> enemy : m_enemies.getList())
-	{
-		window->draw(*enemy->shape());
-	}
-
+	
 	window->display();
 }
 
-void Game::addProjectile(std::shared_ptr<Moveable> a_moveable)
+void Game::addMoveable(std::shared_ptr<Moveable> a_moveable)
 {
-	m_projectiles.addObj(a_moveable);
+	m_moveables.push_back(a_moveable);
 }
 
-void Game::removeProjectile(Moveable* a_moveable)
-{
-	m_projectiles.removeObj(a_moveable);
+void Game::removeMoveable(Moveable* a_moveable)
+{	
+	m_moveables.removeObj(a_moveable);	
 }
 
 sf::FloatRect Game::getRect() const
@@ -174,7 +199,7 @@ sf::FloatRect Game::getRect() const
 
 size_t Game::num_elements() const
 {
-	return 1 + m_projectiles.num_elements();
+	return 1 + m_moveables.size();
 }
 
 Game::operator bool()

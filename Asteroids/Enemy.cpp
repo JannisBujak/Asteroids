@@ -44,7 +44,15 @@ void Turret1::move(float factor)
 		{
 			auto proj = m_weapon->produceProjectile(getCenter(), player_pos - getCenter(), game(), this);
 			if (proj)
-				game()->addProjectile(proj);
+				game()->addMoveable(proj);
 		}
 	}
+}
+
+QJsonObject Turret1::toJson() const
+{
+	return QJsonObject(
+		{
+			{"Type", "Turret1"}
+		});
 }

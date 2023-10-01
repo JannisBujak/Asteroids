@@ -7,10 +7,7 @@
 
 #include "KeyboardReader.h"
 
-/*
-#include <QList>
-#include <QMutex>
-*/
+#include <QFile>
 
 float PointDistance(sf::Vector2f a, sf::Vector2f b);
 sf::Vector2f NormalizeVector(sf::Vector2f v);
@@ -26,64 +23,25 @@ private:
 
 	std::shared_ptr<Player> m_player;
 
-	class MoveableMutexList
+
+	class MoveableMutexList : public std::vector<std::shared_ptr<Moveable>>	
 	{
-	private:
-		std::vector<std::shared_ptr<Moveable>> m_list;
-		// QMutex mutex;
-
 	public:
-		MoveableMutexList() = default;
-
-		MoveableMutexList(std::vector<std::shared_ptr<Moveable>> a_list)
-			: m_list(a_list)
+		bool removeObj(Moveable* a_mov)
 		{
-
-		}
-
-		void addObj(std::shared_ptr<Moveable> a_projectile)
-		{
-			// QMutexLocker l(&mutex);
-			m_list.push_back(a_projectile);
-		}
-
-		void removeObj(Moveable* a_moveable)
-		{
-			// QMutexLocker l(&mutex);
-			for (auto it = m_list.begin(); it != m_list.end(); ++it)
+			for (auto it = begin(); it != end(); ++it)
 			{
-				if (it->get() == a_moveable)
+				if (it->get() == a_mov)
 				{
-					m_list.erase(it);
-					break;
+					erase(it);
+					return true;
 				}
 			}
+			return false;
 		}
-
-		void clearList()
-		{
-			// QMutexLocker l(&mutex);
-			m_list.clear();
-		}
-
-		const std::vector<std::shared_ptr<Moveable>> getList() const
-		{
-			return m_list;
-		}
-
-		void setList(std::vector<std::shared_ptr<Moveable>> a_list)
-		{
-			m_list = a_list;
-		}
-
-		size_t num_elements() const
-		{
-			return m_list.size();
-		}
-
 	};
-	MoveableMutexList m_projectiles;
-	MoveableMutexList m_enemies;
+
+	MoveableMutexList m_moveables;
 
 public:
 	Game();
@@ -91,7 +49,6 @@ public:
 
 private:
 	void init_window(sf::Vector2f window_size);
-	
 public:
 	void ReinitMoveables();
 
@@ -105,12 +62,18 @@ public:
 
 	float update(int& keyTime);
 
+public:
+	// JSON 
+	static QPair<QString, QString> getPathBaename(QString a_filename);
+	static bool openFileCreateDirIfNotEx(QString a_filename, QFile& a_file, QIODeviceBase::OpenMode a_openmode = QIODeviceBase::OpenModeFlag::ReadOnly);
+	void saveAsJson() const;
+
 	void poll();
 	void clear_sight();
 	void render();
 
-	void addProjectile(std::shared_ptr<Moveable> a_moveable);
-	void removeProjectile(Moveable* a_moveable);
+	void addMoveable(std::shared_ptr<Moveable> a_moveable);
+	void removeMoveable(Moveable* a_moveable);
 
 	sf::FloatRect getRect() const;
 

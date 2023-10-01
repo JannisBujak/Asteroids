@@ -28,12 +28,11 @@ endif (UNIX)
 # target_compile_options(Asteroids PUBLIC "/Zc:__cplusplus")
 
 target_include_directories(Asteroids PRIVATE "${SFML_PATH}/include")
-# target_include_directories(Asteroids PRIVATE "$ENV{QTDIR}/include")
+target_include_directories(Asteroids PRIVATE "$ENV{QTDIR}/include")
 
 list(APPEND CMAKE_PREFIX_PATH "${SFML_PATH}")
-# list(APPEND CMAKE_PREFIX_PATH "$ENV{QTDIR}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{QTDIR}")
 
-# message("$ENV{QTDIR}/lib/cmake")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SFML_PATH}/bin")
 
@@ -41,9 +40,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SFML_PATH}/bin")
 target_link_libraries(Asteroids sfml-graphics sfml-window sfml-system)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
-# find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Concurrent)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Concurrent)
 
 target_link_libraries(Asteroids sfml-graphics sfml-audio)
-# target_link_libraries(Asteroids Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Concurrent)
+target_link_libraries(Asteroids Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Concurrent)
 
 

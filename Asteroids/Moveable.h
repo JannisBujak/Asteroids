@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <QJsonObject>
 
 class Game;
 
@@ -21,6 +22,11 @@ public:
 	}
 		
 	virtual void move(float factor) = 0;
+	
+	virtual QJsonObject toJson() const
+	{
+		return QJsonObject();
+	};
 
 	virtual sf::Vector2f getCenter() const
 	{

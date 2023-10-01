@@ -31,4 +31,5 @@ public:
 	virtual std::shared_ptr<Weapon> getWeapon() const override;
 	virtual float getRange() const override;
 	virtual void move(float factor) override;
+	virtual QJsonObject toJson() const override;
 };

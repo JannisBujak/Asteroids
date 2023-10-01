@@ -16,9 +16,9 @@ project ("Asteroids" VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# set(CMAKE_PREFIX_PATH "${QTDIR}")
+set(CMAKE_PREFIX_PATH "${QTDIR}")
 
-# find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 # Include sub-projects.
 add_subdirectory ("Asteroids")

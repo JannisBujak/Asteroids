@@ -5,6 +5,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <QString>
 
 class Game;
 class Moveable;
@@ -16,8 +17,11 @@ protected:
 public:
 	virtual int64_t getCooldown() const = 0;
 	virtual int64_t getBulletMovementSpeed() const = 0;
+	virtual int64_t getTimeOfExistence() const = 0;
 
 	virtual std::shared_ptr<Moveable> produceProjectile(sf::Vector2f a_pos, sf::Vector2f a_dir, Game* game, Moveable* m_shooter);
+	
+	virtual QString getWeaponName() const = 0;
 };
 
 class Gun1 : public Weapon
@@ -29,6 +33,9 @@ public:
 
 	virtual int64_t getCooldown() const override;
 	virtual int64_t getBulletMovementSpeed() const override;
+	virtual int64_t getTimeOfExistence() const override;
+
+	virtual QString getWeaponName() const override;
 };
 
 
@@ -41,4 +48,7 @@ public:
 
 	virtual int64_t getCooldown() const override;
 	virtual int64_t getBulletMovementSpeed() const override;
+	virtual int64_t getTimeOfExistence() const override;
+	
+	virtual QString getWeaponName() const override;
 };

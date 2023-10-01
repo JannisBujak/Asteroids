@@ -50,5 +50,7 @@ public:
 	
 	// factor depends on delta-time and the KeyTargetTime
 	virtual void move(float factor) override;
+
+	virtual QJsonObject toJson() const override;
 };
 

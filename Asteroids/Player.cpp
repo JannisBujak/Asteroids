@@ -87,7 +87,7 @@ void Player::handleInputs(std::vector<KeyboardReader::Command> given_directions,
 				sf::Vector2f dir = PlayerDirection();
 				auto proj = m_weapon->produceProjectile(getCenter(), dir, game(), this);
 				if (proj)
-					game()->addProjectile(proj);
+					game()->addMoveable(proj);
 			}
 			break;
 		}
@@ -109,5 +109,24 @@ void Player::move(float factor)
 	//std::vector<KeyboardReader::Direction> directions = getDirectionRemoveDuplicates(pressed_keys);
 	std::vector<KeyboardReader::Command> directions = KeyboardReader::getDirections();
 	moveByDirections(directions, factor);
+}
+
+QJsonObject Player::toJson() const
+{
+	auto rshape = dynamic_cast<sf::RectangleShape*>(m_shape.get());
+	QJsonObject shape_json({
+		{ "type", "RectangleShape" },
+		{ "left", rshape->getPosition().x },
+		{ "top", rshape->getPosition().y },
+		{ "width", rshape->getSize().x },
+		{ "height", rshape->getSize().y },
+		{ "rotation", rshape->getRotation() }
+	});
+	return QJsonObject(
+		{
+			{ "Type", "Player" },
+			{ "Weapon", m_weapon->getWeaponName() },
+			{ "shape", shape_json }			
+		});
 }
 

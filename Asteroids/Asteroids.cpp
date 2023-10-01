@@ -11,10 +11,8 @@
 #include <cstdio>
 #include <thread>
 
-/*
 #include <QString>
 #include <QDateTime>
-*/
 
 const float OrientedWidth = 1920, OrientedHeight = 1080;
 
@@ -25,7 +23,30 @@ int main(int argc, char** argv)
 
     // Declare a new font
     sf::Font font;
+    
+    // Beispielcode zum Laden aus JSON, 
+    // TODO: In Game::Init verwenden
+#if 0     
     // Load it from a file
+    QFile json;
+    bool succ = openFileCreateDirIfNotEx(QString("%1/temp/Asteroids/Levels.json").arg(QDir::homePath()), json, QIODeviceBase::Truncate | QIODeviceBase::ReadWrite);
+
+    QJsonObject obj(
+        { 
+            {"Name", "grag"}, 
+            {"a", 5},
+            {"b", 6}
+        });
+    QJsonObject obj2;
+    QJsonArray arr;
+    if(!obj.empty())
+        arr.push_back(obj);
+
+    if(!obj2.empty())
+        arr.push_back(obj2);
+    
+    int w1 = json.write(QJsonDocument(arr).toJson(QJsonDocument::Compact));    
+#endif
 
     if (!font.loadFromFile("../../../../res/arial.ttf"))
     {
@@ -84,9 +105,8 @@ int main(int argc, char** argv)
             {
                 fps = (cycle_time != 0) ? (1 / cycle_time) : 0;
                 
-                char buffer[200];
-                sprintf(buffer, "%.0f fps, %u obj", fps, game.num_elements());
-                time_gone_text.setString(buffer);
+                std::string message = QString().asprintf("%.0f fps, %u obj", fps, game.num_elements()).toStdString();
+                time_gone_text.setString(message.c_str());
 
                 time_gone_text.setPosition(sf::Vector2f((OrientedWidth - 2 * time_gone_text.getLocalBounds().width), (OrientedHeight - 2 * time_gone_text.getLocalBounds().height)));
             }
@@ -102,6 +122,15 @@ int main(int argc, char** argv)
         }
 
     }
+    
+    // Clears contents
+    QFile json;
+    json.resize(0);
+    
+    // save state of the level     
+    game.saveAsJson();
+
+    
     return 0;
 }
 
